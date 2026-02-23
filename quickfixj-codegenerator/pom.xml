@@ -61,6 +61,13 @@
 			<plugin>
 				<artifactId>maven-pmd-plugin</artifactId>
 			</plugin>
-		</plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>3.15.2</version>
+				<configuration>
+					<goalPrefix>quickfixj-codegenerator</goalPrefix>
+				</configuration>
+			</plugin>
+    </plugins>
 	</build>
 </project>
