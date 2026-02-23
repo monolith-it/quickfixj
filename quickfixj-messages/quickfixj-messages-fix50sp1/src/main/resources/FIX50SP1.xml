@@ -4,7 +4,7 @@
   <messages>
     <message name="IOI" msgtype="6" msgcat="app">
       <component name="ApplicationSequenceControl" required="N"/>
-      <field name="IOIID" required="Y"/>
+      <field name="IOIid" required="Y"/>
       <field name="IOITransType" required="Y"/>
       <field name="IOIRefID" required="N"/>
       <component name="Instrument" required="Y"/>
@@ -313,7 +313,7 @@
       <field name="Currency" required="N"/>
       <field name="ComplianceID" required="N"/>
       <field name="SolicitedFlag" required="N"/>
-      <field name="IOIID" required="N"/>
+      <field name="IOIid" required="N"/>
       <field name="QuoteID" required="N"/>
       <field name="RefOrderID" required="N"/>
       <field name="RefOrderIDSource" required="N"/>
@@ -403,7 +403,7 @@
       <field name="Currency" required="N"/>
       <field name="ComplianceID" required="N"/>
       <field name="SolicitedFlag" required="N"/>
-      <field name="IOIID" required="N"/>
+      <field name="IOIid" required="N"/>
       <field name="QuoteID" required="N"/>
       <field name="TimeInForce" required="N"/>
       <field name="EffectiveTime" required="N"/>
@@ -684,7 +684,7 @@
       <field name="ClOrdID" required="N"/>
       <field name="OrderCapacity" required="N"/>
       <field name="OrderRestrictions" required="N"/>
-      <field name="IOIID" required="N"/>
+      <field name="IOIid" required="N"/>
       <field name="QuoteType" required="N"/>
       <field name="PreTradeAnonymity" required="N"/>
       <component name="QuotQualGrp" required="N"/>
@@ -1965,7 +1965,7 @@
       <field name="Currency" required="N"/>
       <field name="ComplianceID" required="N"/>
       <field name="SolicitedFlag" required="N"/>
-      <field name="IOIID" required="N"/>
+      <field name="IOIid" required="N"/>
       <field name="QuoteID" required="N"/>
       <field name="TimeInForce" required="N"/>
       <field name="EffectiveTime" required="N"/>
@@ -2804,7 +2804,7 @@
       <component name="YieldData" required="N"/>
       <field name="Currency" required="N"/>
       <field name="ComplianceID" required="N"/>
-      <field name="IOIID" required="N"/>
+      <field name="IOIid" required="N"/>
       <field name="QuoteID" required="N"/>
       <field name="TimeInForce" required="N"/>
       <field name="EffectiveTime" required="N"/>
@@ -2863,7 +2863,7 @@
       <component name="YieldData" required="N"/>
       <field name="Currency" required="N"/>
       <field name="ComplianceID" required="N"/>
-      <field name="IOIID" required="N"/>
+      <field name="IOIid" required="N"/>
       <field name="QuoteID" required="N"/>
       <field name="TimeInForce" required="N"/>
       <field name="EffectiveTime" required="N"/>
@@ -4498,7 +4498,7 @@
         <field name="Currency" required="N"/>
         <field name="ComplianceID" required="N"/>
         <field name="SolicitedFlag" required="N"/>
-        <field name="IOIID" required="N"/>
+        <field name="IOIid" required="N"/>
         <field name="QuoteID" required="N"/>
         <field name="RefOrderID" required="N"/>
         <field name="RefOrderIDSource" required="N"/>
@@ -5271,7 +5271,7 @@
       <value enum="L" description="LETTER_OF_CREDIT"/>
       <value enum="M" description="MARKETPLACE_ASSIGNED_IDENTIFIER"/>
     </field>
-    <field number="23" name="IOIID" type="STRING"/>
+    <field number="23" name="IOIid" type="STRING"/>
     <field number="25" name="IOIQltyInd" type="CHAR">
       <value enum="H" description="HIGH"/>
       <value enum="L" description="LOW"/>
