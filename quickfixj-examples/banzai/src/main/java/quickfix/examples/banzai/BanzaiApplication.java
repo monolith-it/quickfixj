@@ -32,37 +32,7 @@ import quickfix.Session;
 import quickfix.SessionID;
 import quickfix.SessionNotFound;
 import quickfix.UnsupportedMessageType;
-import quickfix.field.AvgPx;
-import quickfix.field.BeginString;
-import quickfix.field.BusinessRejectReason;
-import quickfix.field.ClOrdID;
-import quickfix.field.CumQty;
-import quickfix.field.CxlType;
-import quickfix.field.DeliverToCompID;
-import quickfix.field.ExecID;
-import quickfix.field.HandlInst;
-import quickfix.field.LastPx;
-import quickfix.field.LastShares;
-import quickfix.field.LeavesQty;
-import quickfix.field.LocateReqd;
-import quickfix.field.MsgSeqNum;
-import quickfix.field.MsgType;
-import quickfix.field.OrdStatus;
-import quickfix.field.OrdType;
-import quickfix.field.OrderQty;
-import quickfix.field.OrigClOrdID;
-import quickfix.field.Price;
-import quickfix.field.RefMsgType;
-import quickfix.field.RefSeqNum;
-import quickfix.field.SenderCompID;
-import quickfix.field.SessionRejectReason;
-import quickfix.field.Side;
-import quickfix.field.StopPx;
-import quickfix.field.Symbol;
-import quickfix.field.TargetCompID;
-import quickfix.field.Text;
-import quickfix.field.TimeInForce;
-import quickfix.field.TransactTime;
+import quickfix.field.*;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -360,9 +330,10 @@ public class BanzaiApplication implements Application {
     }
 
     public void send44(Order order) {
+        //TODO - chech defaults
         quickfix.fix44.NewOrderSingle newOrderSingle = new quickfix.fix44.NewOrderSingle(
-                new ClOrdID(order.getID()), sideToFIXSide(order.getSide()),
-                new TransactTime(), typeToFIXType(order.getType()));
+                new ClOrdID(order.getID()), new ExDestination("D"), sideToFIXSide(order.getSide()),
+                new TransactTime(), typeToFIXType(order.getType()),new Currency("USD"), new OrderCapacity('I'));
         newOrderSingle.set(new OrderQty(order.getQuantity()));
         newOrderSingle.set(new Symbol(order.getSymbol()));
         newOrderSingle.set(new HandlInst('1'));

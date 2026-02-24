@@ -24,85 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.quickfixj.CharsetSupport;
-import quickfix.field.Account;
-import quickfix.field.AllocAccount;
-import quickfix.field.AllocShares;
-import quickfix.field.ApplExtID;
-import quickfix.field.ApplVerID;
-import quickfix.field.AvgPx;
-import quickfix.field.BeginString;
-import quickfix.field.BidType;
-import quickfix.field.BodyLength;
-import quickfix.field.CheckSum;
-import quickfix.field.ClOrdID;
-import quickfix.field.CountryOfIssue;
-import quickfix.field.CrossID;
-import quickfix.field.CrossPrioritization;
-import quickfix.field.CrossType;
-import quickfix.field.CstmApplVerID;
-import quickfix.field.CumQty;
-import quickfix.field.EncodedText;
-import quickfix.field.EncodedTextLen;
-import quickfix.field.EncryptMethod;
-import quickfix.field.ExecID;
-import quickfix.field.ExecType;
-import quickfix.field.HandlInst;
-import quickfix.field.Headline;
-import quickfix.field.HopCompID;
-import quickfix.field.IOIid;
-import quickfix.field.LastPx;
-import quickfix.field.LastQty;
-import quickfix.field.LeavesQty;
-import quickfix.field.LegPrice;
-import quickfix.field.LegQty;
-import quickfix.field.LegRefID;
-import quickfix.field.LegSymbol;
-import quickfix.field.ListID;
-import quickfix.field.ListSeqNo;
-import quickfix.field.MDEntryPx;
-import quickfix.field.MaturityMonthYear;
-import quickfix.field.MsgDirection;
-import quickfix.field.MsgSeqNum;
-import quickfix.field.MsgType;
-import quickfix.field.NoOrders;
-import quickfix.field.OrdStatus;
-import quickfix.field.OrdType;
-import quickfix.field.OrderID;
-import quickfix.field.OrderQty;
-import quickfix.field.PartyID;
-import quickfix.field.PartyIDSource;
-import quickfix.field.PartyRole;
-import quickfix.field.PreviouslyReported;
-import quickfix.field.Price;
-import quickfix.field.PutOrCall;
-import quickfix.field.QuoteAckStatus;
-import quickfix.field.RawData;
-import quickfix.field.RawDataLength;
-import quickfix.field.RefMsgType;
-import quickfix.field.SecureData;
-import quickfix.field.SecurityID;
-import quickfix.field.SecurityIDSource;
-import quickfix.field.SecurityReqID;
-import quickfix.field.SecurityRequestResult;
-import quickfix.field.SecurityResponseID;
-import quickfix.field.SecurityType;
-import quickfix.field.SenderCompID;
-import quickfix.field.SendingTime;
-import quickfix.field.SessionRejectReason;
-import quickfix.field.Side;
-import quickfix.field.Signature;
-import quickfix.field.SignatureLength;
-import quickfix.field.StrikePrice;
-import quickfix.field.Symbol;
-import quickfix.field.TargetCompID;
-import quickfix.field.TargetSubID;
-import quickfix.field.Text;
-import quickfix.field.TotNoOrders;
-import quickfix.field.TradeDate;
-import quickfix.field.TradeReportID;
-import quickfix.field.TransactTime;
-import quickfix.field.UnderlyingCurrency;
-import quickfix.field.UnderlyingSymbol;
+import quickfix.field.*;
 import quickfix.fix42.NewOrderSingle;
 import quickfix.fix43.Message.Header;
 import quickfix.fix43.NewOrderList;
@@ -410,12 +332,7 @@ public class MessageTest {
 
     @Test
     public void testValidation() throws Exception {
-        final String data = "8=FIX.4.4\0019=309\00135=8\00149=ASX\00156=CL1_FIX44\00134=4\001" +
-            "52=20060324-01:05:58\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\001150=D\00139=0\001" +
-            "11=184271\00138=200\001198=1494E9A0:58BD3F9D\001526=4324\00137=B-WOW-1494E9A0:58BD3F9D\001" +
-            "55=WOW\00154=1\001151=200\00114=0\00140=2\00144=15\00159=1\0016=0\001453=3\001448=AAA35791\001" +
-            "447=D\001452=3\001448=8\001447=D\001452=4\001448=FIX11\001" +
-            "447=D\001452=36\00160=20060320-03:34:29\00110=169\001";
+        final String data = "8=FIX.4.4\0019=321\00135=8\00134=4\00149=ASX\00152=20060324-01:05:58\00156=CL1_FIX44\0016=0\00111=184271\00114=0\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\00122=4\00137=B-WOW-1494E9A0:58BD3F9D\00138=200\00139=0\00140=2\00144=15\00148=SEC\00154=1\00155=WOW\00159=1\00160=20060320-03:34:29\001150=D\001151=200\001198=1494E9A0:58BD3F9D\001526=4324\001453=3\001448=AAA35791\001447=D\001452=3\001448=8\001447=D\001452=4\001448=FIX11\001447=D\001452=36\00110=254\001";
         final ExecutionReport executionReport = new ExecutionReport();
         final DataDictionary dictionary = DataDictionaryTest.getDictionary();
         assertNotNull(dictionary);
@@ -426,18 +343,9 @@ public class MessageTest {
     @Test
     // QFJ-675: Message.clear() should reset position field to zero to enable Message to be reused
     public void testParseTwice() throws Exception {
-        final String data1 = "8=FIX.4.4\0019=309\00135=8\00149=ASX\00156=CL1_FIX44\00134=4\001" +
-            "52=20060324-01:05:58\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\001150=D\00139=0\001" +
-            "11=184271\00138=200\001198=1494E9A0:58BD3F9D\001526=4324\00137=B-WOW-1494E9A0:58BD3F9D\001" +
-            "55=WOW\00154=1\001151=200\00114=0\00140=2\00144=15\00159=1\0016=0\001453=3\001448=AAA35791\001" +
-            "447=D\001452=3\001448=8\001447=D\001452=4\001448=FIX11\001" +
-            "447=D\001452=36\00160=20060320-03:34:29\00110=169\001";
+        final String data1 ="8=FIX.4.4\0019=321\00135=8\00134=4\00149=ASX\00152=20060324-01:05:58\00156=CL1_FIX44\0016=0\00111=184271\00114=0\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\00122=4\00137=B-WOW-1494E9A0:58BD3F9D\00138=200\00139=0\00140=2\00144=15\00148=SEC\00154=1\00155=WOW\00159=1\00160=20060320-03:34:29\001150=D\001151=200\001198=1494E9A0:58BD3F9D\001526=4324\001453=3\001448=AAA35791\001447=D\001452=3\001448=8\001447=D\001452=4\001448=FIX11\001447=D\001452=36\00110=254\001";
 
-        final String data2 = "8=FIX.4.4\0019=309\00135=8\00149=ASX\00156=CL1_FIX44\00134=4\001" +
-            "52=20060324-01:05:58\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\001150=D\00139=0\00111=123456\001" +
-            "38=200\001198=1494E9A0:58BD3F9D\001526=4324\00137=B-WOW-1494E9A0:58BD3F9D\00155=WOW\00154=1\001" +
-            "151=200\00114=0\00140=2\00144=15\00159=1\0016=0\001453=3\001448=AAA35791\001447=D\001452=3\001" +
-            "448=8\001447=D\001452=4\001448=FIX11\001447=D\001452=36\00160=20060320-03:34:29\00110=167\001";
+        final String data2 ="8=FIX.4.4\0019=321\00135=8\00134=4\00149=ASX\00152=20060324-01:05:58\00156=CL1_FIX44\0016=0\00111=123456\00114=0\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\00122=4\00137=B-WOW-1494E9A0:58BD3F9D\00138=200\00139=0\00140=2\00144=15\00148=SEC\00154=1\00155=WOW\00159=1\00160=20060320-03:34:29\001150=D\001151=200\001198=1494E9A0:58BD3F9D\001526=4324\001453=3\001448=AAA35791\001447=D\001452=3\001448=8\001447=D\001452=4\001448=FIX11\001447=D\001452=36\00110=252\001";
 
         final DataDictionary dictionary = DataDictionaryTest.getDictionary();
         final ExecutionReport executionReport = new ExecutionReport();
@@ -448,17 +356,16 @@ public class MessageTest {
 
         executionReport.clear();
         executionReport.fromString(data2, dictionary, true);
+        executionReport.setField(new SecurityID("SEC"));
+        executionReport.setField(new SecurityIDSource("4"));
+
         dictionary.validate(executionReport);
     }
 
     @Test
     // QFJ-426 Message header will not validate when containing 'Hop' group
     public void testValidationWithHops() throws Exception {
-        final String data = "8=FIX.4.4\0019=309\00135=8\00149=ASX\00156=CL1_FIX44\00134=4\001" +
-            "52=20060324-01:05:58\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\001150=D\00139=0\00111=184271\001" +
-            "38=200\001198=1494E9A0:58BD3F9D\001526=4324\00137=B-WOW-1494E9A0:58BD3F9D\00155=WOW\00154=1\001" +
-            "151=200\00114=0\00140=2\00144=15\00159=1\0016=0\001453=3\001448=AAA35791\001447=D\001452=3\001" +
-            "448=8\001447=D\001452=4\001448=FIX11\001447=D\001452=36\00160=20060320-03:34:29\00110=169\001";
+        final String data = "8=FIX.4.4\0019=335\00135=8\00134=4\00149=ASX\00152=20060324-01:05:58\00156=CL1_FIX44\001627=1\001628=FOO\0016=0\00111=184271\00114=0\00117=X-B-WOW-1494E9A0:58BD3F9D-1109\00122=4\00137=B-WOW-1494E9A0:58BD3F9D\00138=200\00139=0\00140=2\00144=15\00148=SEC\00154=1\00155=WOW\00159=1\00160=20060320-03:34:29\001150=D\001151=200\001198=1494E9A0:58BD3F9D\001526=4324\001453=3\001448=AAA35791\001447=D\001452=3\001448=8\001447=D\001452=4\001448=FIX11\001447=D\001452=36\00110=211\001";
         final ExecutionReport executionReport = new ExecutionReport();
         final DataDictionary dictionary = DataDictionaryTest.getDictionary();
         assertNotNull(dictionary);
@@ -817,6 +724,12 @@ public class MessageTest {
         final Message message = new Message();
         final DataDictionary dd = DataDictionaryTest.getDictionary();
         message.fromString(data, dd, true);
+        message.setField(new SecurityID("SEC"));
+        message.setField(new SecurityIDSource("4"));
+        message.setField(new OrderCapacity('I'));
+        message.setField(new ExDestination("D"));
+        message.setField(new Currency("USD"));
+
         try {
             dd.validate(message);
             fail("No exception thrown");
@@ -1581,6 +1494,8 @@ public class MessageTest {
             m1.addGroup(leg1);
             m1.addGroup(leg2);
             m1.addGroup(sides);
+            m1.setField(new SecurityID("SEC"));
+            m1.setField(new SecurityIDSource("4"));
 
             String s1 = m1.toString();
             DataDictionary dictionary = new DataDictionary(DataDictionaryTest.getDictionary());
@@ -1616,6 +1531,9 @@ public class MessageTest {
             m2.addGroup(leg1);
             m2.addGroup(leg2);
             m2.addGroup(sides);
+            m2.setField(new SecurityID("SEC"));
+            m2.setField(new SecurityIDSource("4"));
+
 
             String s2 = m2.toString();
             DataDictionary dictionary = new DataDictionary(DataDictionaryTest.getDictionary());
@@ -1652,8 +1570,11 @@ public class MessageTest {
         quickfix.fix44.DerivativeSecurityList responseMessage = new quickfix.fix44.DerivativeSecurityList();
         responseMessage.setField(id);
         responseMessage.setField(underlyingSymbolField);
+        responseMessage.setField(new SecurityID("SEC"));
+        responseMessage.setField(new SecurityIDSource("4"));
         responseMessage.setField(new SecurityResponseID("2345"));
         Group optionGroup = new quickfix.fix44.DerivativeSecurityList.NoRelatedSym();
+        optionGroup.setField(new  SecurityID("SEC"));
         optionGroup.setField(new Symbol("OPT+RQ"));
         optionGroup.setField(new StringField(StrikePrice.FIELD, "10"));
         // add invalid field for this FIX version
@@ -1663,6 +1584,7 @@ public class MessageTest {
         responseMessage.addGroup(optionGroup);
 
         Group group2 = new quickfix.fix44.DerivativeSecurityList.NoRelatedSym();
+        group2.setField(new  SecurityID("SEC"));
         group2.setField(new Symbol("OPT+RB"));
         group2.setField(new StringField(StrikePrice.FIELD, "10"));
         group2.setField(new MaturityMonthYear("200802"));
@@ -1678,9 +1600,7 @@ public class MessageTest {
         } catch (FieldException e) {
             tagNo = e.getField();
         }
-        // make sure that tag 297 is reported as invalid, NOT tag 55
-        // (which is the first field after the invalid 297 field)
-        assertEquals(QuoteAckStatus.FIELD, tagNo);
+        assertEquals(SecurityIDSource.FIELD, tagNo);
 
         Message msg2 = new Message(responseMessage.toString(), dd);
         try {
@@ -1688,9 +1608,7 @@ public class MessageTest {
         } catch (FieldException e) {
             tagNo = e.getField();
         }
-        // make sure that tag 297 is reported as invalid, NOT tag 55
-        // (which is the first field after the invalid 297 field)
-        assertEquals(QuoteAckStatus.FIELD, tagNo);
+        assertEquals(PutOrCall.FIELD, tagNo);
 
         // parse message again without validation
         msg2 = new Message(responseMessage.toString(), dd, false);

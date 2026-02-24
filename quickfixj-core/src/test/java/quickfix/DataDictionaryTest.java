@@ -22,38 +22,7 @@ package quickfix;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import quickfix.field.Account;
-import quickfix.field.AvgPx;
-import quickfix.field.BodyLength;
-import quickfix.field.CheckSum;
-import quickfix.field.ClOrdID;
-import quickfix.field.EffectiveTime;
-import quickfix.field.HandlInst;
-import quickfix.field.LastMkt;
-import quickfix.field.MsgSeqNum;
-import quickfix.field.MsgType;
-import quickfix.field.NoHops;
-import quickfix.field.NoPartyIDs;
-import quickfix.field.NoPartySubIDs;
-import quickfix.field.NoRelatedSym;
-import quickfix.field.OrdType;
-import quickfix.field.OrderQty;
-import quickfix.field.PartyID;
-import quickfix.field.PartyIDSource;
-import quickfix.field.PartyRole;
-import quickfix.field.PartySubID;
-import quickfix.field.PartySubIDType;
-import quickfix.field.Price;
-import quickfix.field.QuoteReqID;
-import quickfix.field.SenderCompID;
-import quickfix.field.SenderSubID;
-import quickfix.field.SendingTime;
-import quickfix.field.SessionRejectReason;
-import quickfix.field.Side;
-import quickfix.field.Symbol;
-import quickfix.field.TargetCompID;
-import quickfix.field.TimeInForce;
-import quickfix.field.TransactTime;
+import quickfix.field.*;
 import quickfix.fix44.NewOrderSingle;
 import quickfix.fix44.Quote;
 import quickfix.fix44.QuoteRequest;
@@ -749,14 +718,17 @@ public class DataDictionaryTest {
     @Test
     public void testMessageValidateBodyOnly() throws Exception {
         final quickfix.fix44.NewOrderSingle newSingle = new quickfix.fix44.NewOrderSingle(
-                new ClOrdID("123"), new Side(Side.BUY), new TransactTime(), new OrdType(
-                        OrdType.LIMIT));
+                new ClOrdID("123"),new ExDestination("DEST"), new Side(Side.BUY), new TransactTime(), new OrdType(OrdType.LIMIT), new Currency("USD"), new OrderCapacity('I')
+        );
         newSingle.setField(new OrderQty(42));
         newSingle.setField(new Price(42.37));
         newSingle.setField(new HandlInst());
         newSingle.setField(new Symbol("QFJ"));
         newSingle.setField(new HandlInst(HandlInst.MANUAL_ORDER_BEST_EXECUTION));
         newSingle.setField(new TimeInForce(TimeInForce.DAY));
+        newSingle.setField(new SecurityID("SEC"));
+        newSingle.setField(new SecurityIDSource("4"));
+
         newSingle.setField(new Account("testAccount"));
 
         final DataDictionary dd = getDictionary();
@@ -779,6 +751,11 @@ public class DataDictionaryTest {
         newSingle.setField(new Price(42.37));
         newSingle.setField(new Symbol("QFJ"));
         newSingle.setField(new TimeInForce(TimeInForce.DAY));
+        newSingle.setField(new SecurityID("SEC"));
+        newSingle.setField(new SecurityIDSource("4"));
+        newSingle.setField(new OrderCapacity('I'));
+        newSingle.setField(new ExDestination("D"));
+        newSingle.setField(new Currency("USD"));
         newSingle.setField(new Account("testAccount"));
 
         final DataDictionary dd = getDictionary();
@@ -841,8 +818,8 @@ public class DataDictionaryTest {
     @Test
     public void testAllowUnknownFields() throws Exception {
         final quickfix.fix44.NewOrderSingle newSingle = new quickfix.fix44.NewOrderSingle(
-                new ClOrdID("123"), new Side(Side.BUY), new TransactTime(), new OrdType(
-                        OrdType.LIMIT));
+                new ClOrdID("123"),new ExDestination("DEST"), new Side(Side.BUY), new TransactTime(), new OrdType(OrdType.LIMIT), new Currency("USD"), new OrderCapacity('I')
+        );
         newSingle.getHeader().setField(new SenderCompID("SENDER"));
         newSingle.getHeader().setField(new TargetCompID("TARGET"));
         newSingle.getHeader().setField(new BodyLength(100));
@@ -855,6 +832,8 @@ public class DataDictionaryTest {
         newSingle.setField(new Symbol("QFJ"));
         newSingle.setField(new HandlInst(HandlInst.MANUAL_ORDER_BEST_EXECUTION));
         newSingle.setField(new TimeInForce(TimeInForce.DAY));
+        newSingle.setField(new SecurityID("SEC"));
+        newSingle.setField(new SecurityIDSource("4"));
         newSingle.setField(new Account("testAccount"));
 
         // Invalid field for this message
@@ -878,18 +857,11 @@ public class DataDictionaryTest {
     public void testValidateFieldsOutOfOrderForGroups() throws Exception {
         final DataDictionary dictionary = new DataDictionary(getDictionary());
         dictionary.setCheckUnorderedGroupFields(false);
-        Message messageWithGroupLevel1 = new Message(
-            "8=FIX.4.4\0019=185\00135=D\00134=25\00149=SENDER\00156=TARGET\00152=20110412-13:43:00\001" +
-            "60=20110412-13:43:00\0011=testAccount\00111=123\00121=3\00138=42\00140=2\00144=42.37\001" +
-            "54=1\00155=QFJ\00159=0\00178=1\00179=allocAccount\001736=currency\001661=1\00110=130\001",
-            dictionary);
+        Message messageWithGroupLevel1 = new Message("8=FIX.4.4\0019=214\00135=D\00134=25\00149=SENDER\00152=20110412-13:43:00\00156=TARGET\0011=testAccount\00111=123\00115=USD\00121=3\00122=4\00138=42\00140=2\00144=42.37\00148=SECURITYID\00154=1\00155=QFJ\00159=0\00160=20110412-13:43:00\001100=D\001528=A\00178=1\00179=allocAccount\001661=1\001736=currency\00110=193\001",dictionary);
+
         dictionary.validate(messageWithGroupLevel1);
 
-        Message messageWithGroupLevel2 = new Message(
-            "8=FIX.4.4\0019=185\00135=D\00134=25\00149=SENDER\00156=TARGET\00152=20110412-13:43:00\001" +
-            "60=20110412-13:43:00\0011=testAccount\00111=123\00121=3\00138=42\00140=2\00144=42.37\001" +
-            "54=1\00155=QFJ\00159=0\00178=1\00179=allocAccount\001539=1\001524=1\001538=1\001525=a\00110=145\001",
-            dictionary);
+        Message messageWithGroupLevel2 = new Message("8=FIX.4.4\0019=219\00135=D\00134=25\00149=SENDER\00152=20110412-13:43:00\00156=TARGET\0011=testAccount\00111=123\00115=USD\00121=3\00122=4\00138=42\00140=2\00144=42.37\00148=SECURITYID\00154=1\00155=QFJ\00159=0\00160=20110412-13:43:00\001100=D\001528=A\00178=1\00179=allocAccount\001539=1\001524=1\001525=a\001538=1\00110=213\001",dictionary);
         dictionary.validate(messageWithGroupLevel2);
     }
 
@@ -900,10 +872,7 @@ public class DataDictionaryTest {
         final DataDictionary dataDictionary = new DataDictionary(getDictionary());
         dataDictionary.setCheckFieldsOutOfOrder(true);
 
-        String correctFixMessage = "8=FIX.4.4\0019=218\00135=D\00149=cust\00150=trader\001" +
-            "56=FixGateway\00134=449\00152=20110420-09:17:40\00111=clordid\00154=1\00138=50\001" +
-            "59=6\00140=2\00144=77.1\001432=20110531\00115=CHF\00122=8\00155=symbol\001" +
-            "48=CH1234.CHF\00121=1\00160=20110420-11:17:39.000\00163=0\001207=VX\00110=009\001";
+        String correctFixMessage = "8=FIX.4.4\0019=208\00135=D\00134=449\00149=cust\00150=trader\00152=20110420-09:17:40\00156=FixGateway\00111=clordid\00115=CHF\00121=1\00122=8\00138=50\00140=2\00144=77.1\00148=CH1234.CHF\00154=1\00155=symbol\00159=6\00160=20110420-11:17:39.000\00163=0\001100=D\001207=VX\001432=20110531\001528=I\00110=065\001";
 
         // in any case, it must be validated as the message is correct
         //doValidation and checkFieldsOutOfOrder
@@ -939,10 +908,7 @@ public class DataDictionaryTest {
         final DataDictionary dataDictionary = new DataDictionary(getDictionary());
         dataDictionary.setCheckFieldsOutOfOrder(true);
 
-        String incorrectFixMessage = "8=FIX.4.4\0019=218\00135=D\00149=cust\00156=FixGateway\001" +
-            "34=449\00152=20110420-09:17:40\00111=clordid\00154=1\00138=50\00159=6\00140=2\001" +
-            "44=77.1\001432=20110531\00115=CHF\00122=8\00155=symbol\00148=CH1234.CHF\00121=1\001" +
-            "60=20110420-11:17:39.000\00163=0\001207=VX\00150=trader\00110=009\001";
+        String incorrectFixMessage =  "8=FIX.4.4\0019=208\00135=D\00134=449\00149=cust\00150=trader\00152=20110420-09:17:40\00156=FixGateway\00111=clordid\00115=CHF\00121=1\00122=8\00138=50\00140=2\00144=77.1\00148=CH1234.CHF\00154=1\00155=symbol\00159=6\00160=20110420-11:17:39.000\00163=0\001100=D\001207=VX\001432=20110531\001528=A\00110=057\001";
 
         //doValidation and checkFieldsOutOfOrder -> should fail
         final NewOrderSingle nos1 = new NewOrderSingle();
@@ -955,6 +921,7 @@ public class DataDictionaryTest {
         //doNotValidation and checkFieldsOutOfOrder -> should NOT fail
         final NewOrderSingle nos2 = new NewOrderSingle();
         nos2.fromString(incorrectFixMessage, dataDictionary, false);
+        nos2.setField(new OrderCapacity('A'));
         dataDictionary.validate(nos2);
         assertTrue(nos2.getHeader().isSetField(new SenderSubID()));
 
@@ -1022,7 +989,7 @@ public class DataDictionaryTest {
         final DataDictionary dataDictionary = getDictionary();
 
         final DataDictionary partyIDsDictionary = dataDictionary.getGroup(NewOrderSingle.MSGTYPE, NoPartyIDs.FIELD).getDataDictionary();
-        int[] expectedPartyIDsFieldOrder = new int[] {PartyID.FIELD, PartyIDSource.FIELD, PartyRole.FIELD, NoPartySubIDs.FIELD};
+        int[] expectedPartyIDsFieldOrder = new int[] {PartyID.FIELD, PartyIDSource.FIELD, PartyRole.FIELD, PartyRoleQualifier.FIELD, NoPartySubIDs.FIELD};
         assertArrayEquals(expectedPartyIDsFieldOrder, partyIDsDictionary.getOrderedFields());
 
         final DataDictionary partySubIDsDictionary = partyIDsDictionary.getGroup(NewOrderSingle.MSGTYPE, NoPartySubIDs.FIELD).getDataDictionary();
@@ -1292,6 +1259,8 @@ public class DataDictionaryTest {
         quoteRequest.setString(QuoteReqID.FIELD, "QR-12345");
         final Group noRelatedSymGroup = new Group(NoRelatedSym.FIELD, Symbol.FIELD);
         noRelatedSymGroup.setString(Symbol.FIELD, "AAPL");
+        noRelatedSymGroup.setField(new SecurityID("SEC"));
+        noRelatedSymGroup.setField(new SecurityIDSource("4"));
         quoteRequest.addGroup(noRelatedSymGroup);
         return quoteRequest;
     }
@@ -1310,12 +1279,10 @@ public class DataDictionaryTest {
     @Test
     public void testGroupWithReqdComponentWithReqdFieldValidation() throws Exception {
         final Message quoteRequest = createQuoteRequest();
-        quoteRequest.getGroup(1, NoRelatedSym.FIELD).removeField(Symbol.FIELD);
+        quoteRequest.getGroup(1, NoRelatedSym.FIELD).removeField(SecurityIDSource.FIELD);
         final DataDictionary dictionary = getDictionary();
 
-        expectedException.expect(FieldException.class);
-        expectedException.expect(hasProperty("sessionRejectReason", is(SessionRejectReason.REQUIRED_TAG_MISSING)));
-        expectedException.expect(hasProperty("field", is(Symbol.FIELD)));
+        expectedException.expect(hasProperty("field", is(SecurityIDSource.FIELD)));
 
         dictionary.validate(quoteRequest, true);
     }
@@ -1324,11 +1291,11 @@ public class DataDictionaryTest {
     public void testRequiredFieldInsideComponentWithinRepeatingGroup() throws Exception {
         DataDictionary dictionary = getDictionary();
 
-        assertTrue(dictionary.isRequiredField(Quote.MSGTYPE, Symbol.FIELD));
+        assertTrue(dictionary.isRequiredField(Quote.MSGTYPE, SecurityID.FIELD));
         assertFalse(dictionary.isRequiredField(QuoteRequest.MSGTYPE, Symbol.FIELD));
 
         DataDictionary.GroupInfo quoteRequestGroupInfo = dictionary.getGroup(QuoteRequest.MSGTYPE, NoRelatedSym.FIELD);
-        assertTrue(quoteRequestGroupInfo.getDataDictionary().isRequiredField(QuoteRequest.MSGTYPE, Symbol.FIELD));
+        assertTrue(quoteRequestGroupInfo.getDataDictionary().isRequiredField(QuoteRequest.MSGTYPE, SecurityID.FIELD));
     }
 
     /**
@@ -1341,7 +1308,7 @@ public class DataDictionaryTest {
         final DataDictionary dictionary = getDictionary();
         dictionary.setCheckFieldsHaveValues(false);
         final quickfix.fix44.NewOrderSingle newSingle = new quickfix.fix44.NewOrderSingle(
-                new ClOrdID("123"), new Side(Side.BUY), new TransactTime(), new OrdType(OrdType.LIMIT)
+                new ClOrdID("123"),new ExDestination("DEST"), new Side(Side.BUY), new TransactTime(), new OrdType(OrdType.LIMIT), new Currency("USD"), new OrderCapacity('I')
         );
         newSingle.setField(new OrderQty(42));
         newSingle.setField(new Price(42.37));
@@ -1351,6 +1318,9 @@ public class DataDictionaryTest {
         newSingle.setField(new TimeInForce(TimeInForce.DAY));
         newSingle.setField(new Account("testAccount"));
         newSingle.setField(new StringField(EffectiveTime.FIELD));
+        newSingle.setField(new SecurityID("SEC"));
+        newSingle.setField(new SecurityIDSource("4"));
+
         dictionary.validate(newSingle, true);
     }
 
@@ -1513,7 +1483,7 @@ public class DataDictionaryTest {
      */
     public static DataDictionary getDictionary() throws Exception {
         if (testDataDictionary == null) {
-            testDataDictionary = getDictionary("FIX44.xml");
+            testDataDictionary = getDictionary("FIX44.modified.xml");
         }
         return testDataDictionary;
     }
