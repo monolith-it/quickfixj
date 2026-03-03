@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.quickfixj</groupId>
         <artifactId>quickfixj-parent</artifactId>
-        <version>2.3.2</version>
+        <version>2.3.2-MMTS</version>
     </parent>
 
     <artifactId>quickfixj-core</artifactId>
@@ -389,6 +389,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Xmx512m -Djava.net.preferIPv4Stack=true
+
                             --add-opens=java.base/java.lang=ALL-UNNAMED
                             --add-opens=java.base/java.util=ALL-UNNAMED
                         </argLine>

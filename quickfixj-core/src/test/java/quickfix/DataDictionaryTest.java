@@ -794,7 +794,7 @@ public class DataDictionaryTest {
         //   If bodyOnly is true, the correct data dictionary is not checked.
         dd.validate(newSingle, true);
     }
-    
+
     // QF C++ treats the string argument as a filename although it's
     // named 'url'. QFJ string argument can be either but this test
     // ensures the DD works correctly with a regular file path.
@@ -1223,8 +1223,8 @@ public class DataDictionaryTest {
     }
 
     /**
-     * <pre>
      * +---------------------------+------------------------+-------+------------+
+     * <pre>
      * | AllowUnknownMessageFields | CheckUserDefinedFields | Field | Validation |
      * +---------------------------+------------------------+-------+------------+
      * |                     false |                  false |  6000 |    SUCCESS |
@@ -1379,7 +1379,7 @@ public class DataDictionaryTest {
                     Message msg = MessageUtils.parse(messageFactory, dd, msgString);
                     Group partyGroup = msg.getGroups(quickfix.field.NoPartyIDs.FIELD).get(0);
                     char partyIdSource = partyGroup.getChar(PartyIDSource.FIELD);
-                    assertEquals(PartyIDSource.PROPRIETARY_CUSTOM_CODE, partyIdSource);
+                    assertEquals(PartyIDSource.PROPRIETARY, partyIdSource);
                     return msg;
                 };
                 resultList.add(ptpe.submit(messageParser));
@@ -1412,7 +1412,7 @@ public class DataDictionaryTest {
             assertEquals("External DTD: Failed to read external DTD 'mathml.dtd', because 'http' access is not allowed due to restriction set by the accessExternalDTD property.", e.getCause().getCause().getMessage());
         }
     }
-    
+
     /**
      * For FIX.Latest a minor version is not required.
      */
